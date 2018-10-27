@@ -17,6 +17,7 @@ limitations under the License.
 #include "tensorflow/core/common_runtime/device_mgr.h"
 #include "tensorflow/core/common_runtime/graph_runner.h"
 #include "tensorflow/core/common_runtime/process_function_library_runtime.h"
+#include "tensorflow/core/framework/dataset.h"
 #include "tensorflow/core/framework/device_base.h"
 #include "tensorflow/core/framework/partial_tensor_shape.h"
 #include "tensorflow/core/framework/tensor.h"
@@ -27,7 +28,6 @@ limitations under the License.
 #include "tensorflow/core/grappler/grappler_item.h"
 #include "tensorflow/core/grappler/grappler_item_builder.h"
 #include "tensorflow/core/grappler/optimizers/meta_optimizer.h"
-#include "tensorflow/core/kernels/data/dataset.h"
 #include "tensorflow/core/lib/random/random.h"
 #include "tensorflow/core/protobuf/meta_graph.pb.h"
 #include "tensorflow/core/protobuf/rewriter_config.pb.h"
@@ -224,6 +224,17 @@ class OptimizeDatasetOp : public UnaryDatasetOpKernel {
       // moment (e.g. because we have no cost model for dataset ops).
       if (optimizations_.empty()) {
         rewriter_config.add_optimizers("non-existent");
+      } else {
+        // If we apply custom dataset optimizers, explicitly trigger a subset of
+        // standard grappler optimizations to further optimize modified dataset
+        // graphs (e.g. performing constant folding on merged functions,
+        // removing unused graph nodes)
+        // TODO(b/118175421): This should be part of the tf.data optimization
+        // pass manager.
+        for (const auto& optimizer : {"pruning", "function", "constfold",
+                                      "shape", "arithmetic", "dependency"}) {
+          rewriter_config.add_optimizers(optimizer);
+        }
       }
       tensorflow::grappler::ItemConfig item_config;
       item_config.apply_optimizations = true;

@@ -687,6 +687,7 @@ cuda_py_test(
     size = "medium",
     srcs = ["parameterized_truncated_normal_op_test.py"],
     additional_deps = [
+        "@absl_py//absl/testing:parameterized",
         "//third_party/py/numpy",
         "//tensorflow/core:protos_all_py",
         "//tensorflow/python:client",
@@ -1137,6 +1138,18 @@ cuda_py_test(
         "//tensorflow/python:gradients",
         "//tensorflow/python:nn_grad",
         "//tensorflow/python:nn_ops",
+    ],
+)
+
+tf_py_test(
+    name = "unicode_transcode_op_test",
+    size = "small",
+    srcs = ["unicode_transcode_op_test.py"],
+    additional_deps = [
+        "@absl_py//absl/testing:parameterized",
+        "//tensorflow/python:client_testlib",
+        "//tensorflow/python:framework_for_generated_wrappers",
+        "//tensorflow/python:string_ops",
     ],
 )
 
@@ -3315,8 +3328,11 @@ cuda_py_test(
         "//tensorflow/python:dtypes",
         "//tensorflow/python:framework",
         "//tensorflow/python:framework_ops",
+        "//tensorflow/python:functional_ops",
         "//tensorflow/python:gradients_impl",
         "//tensorflow/python:list_ops",
+        "//tensorflow/python:math_ops",
+        "//tensorflow/python:tensor_array_grad",
         "//tensorflow/python:tf_optimizer",
         "//tensorflow/python:while_v2",
     ],
