@@ -754,7 +754,6 @@ tf_cc_test(
 tf_proto_library(
     name = "xla_compilation_cache_proto",
     srcs = ["xla_compilation_cache.proto"],
-    cc_api_version = 2,
     protodeps = tf_additional_all_protos() + ["@local_xla//xla/service:hlo_proto"],
     visibility = ["//visibility:public"],
 )
@@ -1146,7 +1145,10 @@ cc_library(
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/container:flat_hash_set",
         "@com_google_absl//absl/container:inlined_vector",
+        "@com_google_absl//absl/log",
+        "@com_google_absl//absl/log:check",
         "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/status",
         "@com_google_absl//absl/status:statusor",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/types:optional",
@@ -1316,10 +1318,13 @@ tf_cc_test(
         "//tensorflow/core:session_options",
         "//tensorflow/core:test",
         "//tensorflow/core:testlib",
+        "//tensorflow/core/common_runtime:device_set",
         "@com_google_absl//absl/container:flat_hash_map",
         "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/status",
         "@com_google_absl//absl/strings",
         "@com_google_absl//absl/types:span",
+        "@com_google_googletest//:gtest",
         "@local_xla//xla:test",
     ],
 )
@@ -1497,7 +1502,6 @@ cc_library(
 tf_proto_library(
     name = "xla_activity_proto",
     srcs = ["xla_activity.proto"],
-    cc_api_version = 2,
     protodeps = tf_additional_all_protos(),
 )
 
@@ -1862,7 +1866,7 @@ tf_cc_test(
         "//tensorflow/core:test",
         "//tensorflow/core/platform:errors",
         "@com_google_googletest//:gtest_main",
-        "@local_tsl//tsl/protobuf:error_codes_proto_impl_cc",
+        "@local_xla//xla/tsl/protobuf:error_codes_proto_impl_cc",
     ],
 )
 
